@@ -1,0 +1,589 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --green-dark:#1a472a;--green-med:#2d6a4f;--green-light:#52b788;--green-pale:#b7e4c7;
+    --green-mint:#d8f3dc;--gold:#f4d03f;--gold-dark:#d4ac0d;--brown:#6b3a2a;
+    --pixel:#333;--white:#fff;--cream:#fdf6e3;
+  }
+  body{font-family:'Nunito',sans-serif;background:var(--green-dark);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px}
+  .phone{width:360px;background:var(--green-dark);border-radius:32px;border:3px solid var(--green-light);overflow:hidden;position:relative;box-shadow:0 0 0 6px #0d2b1a,0 20px 60px rgba(0,0,0,.5)}
+  .screen{display:none;flex-direction:column;min-height:600px;max-height:700px;overflow-y:auto}
+  .screen.active{display:flex}
+  .screen::-webkit-scrollbar{width:4px}.screen::-webkit-scrollbar-track{background:var(--green-dark)}.screen::-webkit-scrollbar-thumb{background:var(--green-light);border-radius:4px}
+
+  /* SPLASH */
+  #splash{background:var(--green-dark);align-items:center;justify-content:center;cursor:pointer;min-height:600px;position:relative;overflow:hidden}
+  #splash::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 60%,#2d6a4f44,transparent 70%)}
+  .splash-logo{display:flex;flex-direction:column;align-items:center;gap:16px;z-index:1}
+  .pixel-device{width:120px;height:140px;background:#2a7a2a;border:4px solid #1a4a1a;border-radius:12px;position:relative;display:flex;align-items:center;justify-content:center;image-rendering:pixelated}
+  .pixel-screen{width:80px;height:70px;background:#4a9e4a;border:3px solid #1a4a1a;border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .pixel-tree{font-size:36px}
+  .pixel-btns{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+  .pixel-btn{width:14px;height:14px;background:#f4d03f;border:2px solid #8b6914;border-radius:50%}
+  .splash-title{font-family:'Press Start 2P',monospace;color:var(--green-light);font-size:20px;text-shadow:3px 3px #1a4a1a;letter-spacing:2px}
+  .splash-sub{font-family:'Press Start 2P',monospace;color:var(--green-pale);font-size:8px;margin-top:-8px}
+  .tap-hint{font-family:'Press Start 2P',monospace;color:var(--gold);font-size:9px;animation:blink 1.2s infinite;margin-top:32px}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .pixel-stars{position:absolute;width:100%;height:100%}
+  .star{position:absolute;background:var(--green-pale);animation:twinkle 2s infinite}
+  @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+
+  /* PROFILE */
+  #profile{background:var(--green-dark)}
+  .topbar{background:var(--green-med);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+  .topbar-title{font-family:'Press Start 2P',monospace;color:var(--green-pale);font-size:11px}
+  .icon-btn{background:none;border:none;cursor:pointer;font-size:20px;color:var(--green-pale);padding:4px}
+  .profile-header{background:var(--green-med);padding:16px;display:flex;align-items:center;gap:12px}
+  .avatar{width:60px;height:60px;background:var(--green-dark);border-radius:50%;border:3px solid var(--green-light);display:flex;align-items:center;justify-content:center;font-size:28px}
+  .profile-info h2{color:var(--white);font-size:16px;font-weight:800}
+  .profile-info p{color:var(--green-pale);font-size:12px}
+  .coins-badge{background:var(--gold);color:var(--brown);font-weight:800;font-size:13px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;margin-top:4px;width:fit-content}
+  .profile-actions{display:flex;gap:8px;padding:12px 16px;background:var(--green-med)}
+  .action-btn{flex:1;background:var(--green-dark);color:var(--green-pale);border:2px solid var(--green-light);border-radius:20px;padding:6px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}
+  .action-btn:hover{background:var(--green-light);color:var(--white)}
+  .section-title{font-family:'Press Start 2P',monospace;color:var(--green-pale);font-size:9px;padding:12px 16px 6px;text-transform:uppercase}
+  .trees-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+  .tree-card{background:var(--green-med);border-radius:12px;overflow:hidden;border:2px solid var(--green-light);cursor:pointer;transition:.2s}
+  .tree-card:hover{transform:scale(1.03);border-color:var(--gold)}
+  .tree-img{width:100%;height:90px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#1a472a,#2d6a4f)}
+  .tree-info{padding:8px}
+  .tree-name{color:var(--white);font-weight:800;font-size:13px}
+  .tree-date{color:var(--green-pale);font-size:10px}
+  .tree-streak{background:var(--green-dark);border-radius:20px;padding:4px 8px;margin-top:4px;display:flex;align-items:center;gap:4px;font-size:10px;color:var(--gold);font-weight:700}
+  .bottom-nav{background:var(--green-med);display:flex;justify-content:space-around;padding:8px 0;border-top:2px solid var(--green-light)}
+  .nav-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--green-pale);font-weight:700;padding:4px 8px}
+  .nav-btn.active,.nav-btn:hover{color:var(--gold)}
+  .nav-icon{font-size:22px}
+
+  /* TREE DETAIL */
+  #tree-detail{background:var(--green-dark)}
+  .tree-hero{height:180px;background:linear-gradient(135deg,#1a472a,#2d6a4f);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative}
+  .care-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px}
+  .care-card{background:var(--green-med);border-radius:12px;padding:12px;border:2px solid transparent;cursor:pointer;transition:.2s}
+  .care-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .care-icon{font-size:24px;margin-bottom:6px}
+  .care-title{color:var(--white);font-weight:800;font-size:13px}
+  .care-desc{color:var(--green-pale);font-size:11px;margin-top:2px;line-height:1.4}
+  .care-status{display:flex;align-items:center;gap:4px;margin-top:6px}
+  .status-bar{flex:1;height:6px;background:var(--green-dark);border-radius:3px;overflow:hidden}
+  .status-fill{height:100%;border-radius:3px;transition:.5s}
+
+  /* CARE MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+  .modal{background:var(--green-dark);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:360px;max-height:70vh;overflow-y:auto}
+  .modal h3{font-family:'Press Start 2P',monospace;color:var(--green-pale);font-size:11px;margin-bottom:12px}
+  .modal p{color:var(--green-pale);font-size:13px;line-height:1.6;margin-bottom:10px}
+  .modal-tip{background:var(--green-med);border-radius:10px;padding:10px;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
+  .modal-tip .tip-icon{font-size:20px;flex-shrink:0}
+  .modal-tip p{margin:0;font-size:12px}
+  .modal-close{width:100%;background:var(--green-light);color:var(--white);border:none;border-radius:20px;padding:10px;font-weight:800;font-size:14px;cursor:pointer;margin-top:12px}
+
+  /* STREAK */
+  #streak{background:var(--green-dark)}
+  .streak-hero{background:var(--green-med);padding:20px 16px;text-align:center;border-bottom:2px solid var(--green-light)}
+  .streak-fire{font-size:60px;animation:bounce .8s infinite alternate}
+  @keyframes bounce{from{transform:scale(1)}to{transform:scale(1.15)}}
+  .streak-days{font-family:'Press Start 2P',monospace;color:var(--gold);font-size:28px;margin-top:8px}
+  .streak-label{color:var(--green-pale);font-size:13px;margin-top:4px}
+  .reward-path{padding:16px;display:flex;flex-direction:column;gap:0}
+  .reward-node{display:flex;align-items:center;gap:12px;position:relative;padding:8px 0}
+  .reward-node::before{content:'';position:absolute;left:21px;top:50px;width:2px;height:calc(100% - 8px);background:var(--green-light);z-index:0}
+  .reward-node:last-child::before{display:none}
+  .node-circle{width:44px;height:44px;border-radius:50%;border:3px solid var(--green-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;z-index:1;position:relative}
+  .node-circle.done{background:var(--green-light);border-color:var(--gold)}
+  .node-circle.active{background:var(--gold);border-color:var(--gold-dark);animation:pulse-gold 1s infinite}
+  @keyframes pulse-gold{0%,100%{box-shadow:0 0 0 0 #f4d03f66}50%{box-shadow:0 0 0 8px transparent}}
+  .node-circle.locked{background:var(--green-dark);opacity:.5}
+  .node-info{flex:1}
+  .node-title{color:var(--white);font-weight:800;font-size:14px}
+  .node-reward{color:var(--gold);font-size:12px;display:flex;align-items:center;gap:4px}
+  .node-days{color:var(--green-pale);font-size:11px}
+  .claim-btn{background:var(--gold);color:var(--brown);border:none;border-radius:20px;padding:4px 12px;font-weight:800;font-size:11px;cursor:pointer}
+
+  /* SHOP */
+  #shop{background:var(--green-dark)}
+  .shop-balance{background:var(--green-med);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--green-light)}
+  .balance-label{color:var(--green-pale);font-size:12px}
+  .balance-val{font-family:'Press Start 2P',monospace;color:var(--gold);font-size:14px}
+  .shop-tabs{display:flex;background:var(--green-med);border-bottom:2px solid var(--green-light)}
+  .shop-tab{flex:1;padding:10px;text-align:center;color:var(--green-pale);font-weight:700;font-size:12px;cursor:pointer;border:none;background:none}
+  .shop-tab.active{color:var(--gold);border-bottom:3px solid var(--gold)}
+  .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+  .shop-item{background:var(--green-med);border-radius:12px;padding:12px;text-align:center;border:2px solid transparent;cursor:pointer;transition:.2s}
+  .shop-item:hover{border-color:var(--gold)}
+  .shop-item.owned{border-color:var(--green-light);opacity:.7}
+  .item-preview{font-size:40px;margin-bottom:6px}
+  .item-name{color:var(--white);font-weight:800;font-size:12px}
+  .item-price{color:var(--gold);font-size:12px;font-weight:700;margin-top:4px}
+  .buy-btn{background:var(--gold);color:var(--brown);border:none;border-radius:20px;padding:4px 12px;font-weight:800;font-size:11px;cursor:pointer;margin-top:6px;width:100%}
+  .buy-btn:disabled{background:var(--green-dark);color:var(--green-pale);cursor:not-allowed}
+
+  /* SETTINGS */
+  #settings{background:var(--green-dark)}
+  .settings-bg{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .settings-card{background:var(--green-med);border-radius:12px;overflow:hidden;border:2px solid var(--green-light)}
+  .settings-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(82,183,136,.3)}
+  .settings-item:last-child{border-bottom:none}
+  .settings-label{color:var(--white);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .settings-icon{font-size:20px}
+  .toggle{width:44px;height:24px;background:var(--green-dark);border-radius:12px;position:relative;cursor:pointer;transition:.3s;border:2px solid var(--green-light)}
+  .toggle.on{background:var(--green-light)}
+  .toggle::after{content:'';width:18px;height:18px;background:var(--white);border-radius:50%;position:absolute;top:1px;left:1px;transition:.3s}
+  .toggle.on::after{left:21px}
+  .brightness-slider{width:120px;accent-color:var(--green-light)}
+  .lang-select{background:var(--green-dark);color:var(--green-pale);border:2px solid var(--green-light);border-radius:8px;padding:4px 8px;font-size:13px;font-family:'Nunito',sans-serif}
+  .version-text{color:var(--green-pale);font-size:11px;text-align:center;padding:8px;font-family:'Press Start 2P',monospace}
+
+  /* NOTIFICATION */
+  .notif{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--brown);padding:8px 16px;border-radius:20px;font-weight:800;font-size:12px;animation:notif-in .3s ease;z-index:200;white-space:nowrap}
+  @keyframes notif-in{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
+
+<div class="phone" id="app">
+
+  <!-- SPLASH -->
+  <div class="screen active" id="splash" onclick="showScreen('profile')">
+    <div class="pixel-stars" id="stars"></div>
+    <div class="splash-logo">
+      <div class="pixel-device">
+        <div class="pixel-screen">
+          <div class="pixel-tree">🌳</div>
+        </div>
+        <div class="pixel-btns">
+          <div class="pixel-btn"></div>
+          <div class="pixel-btn"></div>
+        </div>
+      </div>
+      <div class="splash-title">TREPET</div>
+      <div class="splash-sub">Cuidado de Árboles</div>
+      <div class="tap-hint">▶ TOCA PARA INICIAR ◀</div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="profile">
+    <div class="topbar">
+      <div class="topbar-title">🌿 TREPET</div>
+      <button class="icon-btn" onclick="showScreen('settings')">⚙️</button>
+    </div>
+    <div class="profile-header">
+      <div class="avatar">🧑</div>
+      <div class="profile-info">
+        <h2>Plant</h2>
+        <p>@TreePet</p>
+        <div class="coins-badge">🪙 <span id="coins-display">250</span> moneditas</div>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <div class="action-btn">Editar perfil</div>
+      <div class="action-btn">Mis árboles</div>
+      <div class="action-btn">Compartir</div>
+    </div>
+    <div class="section-title">🌳 Mis árboles</div>
+    <div class="trees-grid">
+      <div class="tree-card" onclick="showTreeDetail('jacaranda')">
+        <div class="tree-img">🌸</div>
+        <div class="tree-info">
+          <div class="tree-name">Jacaranda</div>
+          <div class="tree-date">Nov 2024</div>
+          <div class="tree-streak">🔥 1000 días</div>
+        </div>
+      </div>
+      <div class="tree-card" onclick="showTreeDetail('encino')">
+        <div class="tree-img">🌳</div>
+        <div class="tree-info">
+          <div class="tree-name">Encino</div>
+          <div class="tree-date">Feb 2024</div>
+          <div class="tree-streak">🔥 100 días</div>
+        </div>
+      </div>
+      <div class="tree-card" onclick="showTreeDetail('cedro')">
+        <div class="tree-img">🌲</div>
+        <div class="tree-info">
+          <div class="tree-name">Cedro</div>
+          <div class="tree-date">Mar 2025</div>
+          <div class="tree-streak">🔥 45 días</div>
+        </div>
+      </div>
+      <div class="tree-card" style="border:2px dashed var(--green-light);background:transparent;display:flex;align-items:center;justify-content:center;height:120px;cursor:pointer" onclick="notify('¡Próximamente podrás agregar más árboles!')">
+        <div style="color:var(--green-pale);font-size:32px;text-align:center">+<br><span style="font-size:11px;font-weight:700">Agregar árbol</span></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn active" onclick="showScreen('profile')"><div class="nav-icon">🏠</div>Inicio</button>
+      <button class="nav-btn" onclick="showScreen('streak')"><div class="nav-icon">🔥</div>Racha</button>
+      <button class="nav-btn" onclick="showScreen('shop')"><div class="nav-icon">🛒</div>Tienda</button>
+      <button class="nav-btn" onclick="showScreen('settings')"><div class="nav-icon">⚙️</div>Ajustes</button>
+    </div>
+  </div>
+
+  <!-- TREE DETAIL -->
+  <div class="screen" id="tree-detail">
+    <div class="topbar">
+      <button class="icon-btn" onclick="showScreen('profile')">◀</button>
+      <div class="topbar-title" id="tree-detail-name">Árbol</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="tree-hero" id="tree-hero">🌸</div>
+    <div style="padding:12px 16px;background:var(--green-med);display:flex;justify-content:space-around">
+      <div style="text-align:center"><div style="font-size:22px">💧</div><div style="color:var(--green-pale);font-size:10px;font-weight:700">AGUA</div><div style="color:var(--white);font-size:13px;font-weight:800" id="water-val">75%</div></div>
+      <div style="text-align:center"><div style="font-size:22px">☀️</div><div style="color:var(--green-pale);font-size:10px;font-weight:700">LUZ</div><div style="color:var(--white);font-size:13px;font-weight:800" id="light-val">90%</div></div>
+      <div style="text-align:center"><div style="font-size:22px">🌱</div><div style="color:var(--green-pale);font-size:10px;font-weight:700">TIERRA</div><div style="color:var(--white);font-size:13px;font-weight:800" id="soil-val">60%</div></div>
+      <div style="text-align:center"><div style="font-size:22px">🌡️</div><div style="color:var(--green-pale);font-size:10px;font-weight:700">TEMP</div><div style="color:var(--white);font-size:13px;font-weight:800" id="temp-val">Óptima</div></div>
+    </div>
+    <div class="section-title">Necesidades del árbol</div>
+    <div class="care-grid" id="care-grid">
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="showScreen('profile')"><div class="nav-icon">🏠</div>Inicio</button>
+      <button class="nav-btn" onclick="showScreen('streak')"><div class="nav-icon">🔥</div>Racha</button>
+      <button class="nav-btn" onclick="showScreen('shop')"><div class="nav-icon">🛒</div>Tienda</button>
+      <button class="nav-btn" onclick="showScreen('settings')"><div class="nav-icon">⚙️</div>Ajustes</button>
+    </div>
+  </div>
+
+  <!-- STREAK -->
+  <div class="screen" id="streak">
+    <div class="topbar">
+      <button class="icon-btn" onclick="showScreen('profile')">◀</button>
+      <div class="topbar-title">RACHA & RECOMPENSAS</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="streak-hero">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-days" id="streak-count">47</div>
+      <div class="streak-label">días consecutivos cuidando tus árboles</div>
+    </div>
+    <div class="section-title">🏆 Camino de recompensas</div>
+    <div class="reward-path" id="reward-path"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="showScreen('profile')"><div class="nav-icon">🏠</div>Inicio</button>
+      <button class="nav-btn active" onclick="showScreen('streak')"><div class="nav-icon">🔥</div>Racha</button>
+      <button class="nav-btn" onclick="showScreen('shop')"><div class="nav-icon">🛒</div>Tienda</button>
+      <button class="nav-btn" onclick="showScreen('settings')"><div class="nav-icon">⚙️</div>Ajustes</button>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <div class="screen" id="shop">
+    <div class="topbar">
+      <button class="icon-btn" onclick="showScreen('profile')">◀</button>
+      <div class="topbar-title">TIENDA</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="shop-balance">
+      <div class="balance-label">Tu balance</div>
+      <div class="balance-val">🪙 <span id="shop-coins">250</span></div>
+    </div>
+    <div class="shop-tabs">
+      <button class="shop-tab active" onclick="switchTab('accesorios')">Accesorios</button>
+      <button class="shop-tab" onclick="switchTab('macetas')">Macetas</button>
+      <button class="shop-tab" onclick="switchTab('fondos')">Fondos</button>
+    </div>
+    <div class="shop-grid" id="shop-grid"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="showScreen('profile')"><div class="nav-icon">🏠</div>Inicio</button>
+      <button class="nav-btn" onclick="showScreen('streak')"><div class="nav-icon">🔥</div>Racha</button>
+      <button class="nav-btn active" onclick="showScreen('shop')"><div class="nav-icon">🛒</div>Tienda</button>
+      <button class="nav-btn" onclick="showScreen('settings')"><div class="nav-icon">⚙️</div>Ajustes</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="screen" id="settings">
+    <div class="topbar">
+      <button class="icon-btn" onclick="showScreen('profile')">◀</button>
+      <div class="topbar-title">AJUSTES</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="settings-bg">
+      <div class="settings-card">
+        <div class="settings-item">
+          <div class="settings-label"><span class="settings-icon">🌍</span> Idioma</div>
+          <select class="lang-select" onchange="notify('Idioma cambiado a: '+this.options[this.selectedIndex].text)">
+            <option value="es">🇲🇽 Español</option>
+            <option value="en">🇺🇸 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="pt">🇧🇷 Português</option>
+          </select>
+        </div>
+        <div class="settings-item">
+          <div class="settings-label"><span class="settings-icon">☀️</span> Brillo</div>
+          <input type="range" class="brightness-slider" min="20" max="100" value="80" step="10" oninput="setBrightness(this.value)">
+        </div>
+        <div class="settings-item">
+          <div class="settings-label"><span class="settings-icon">🔔</span> Notificaciones</div>
+          <div class="toggle on" id="toggle-notif" onclick="toggleSwitch('notif')"></div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-label"><span class="settings-icon">🌙</span> Modo oscuro</div>
+          <div class="toggle on" id="toggle-dark" onclick="toggleSwitch('dark')"></div>
+        </div>
+      </div>
+      <div class="settings-card">
+        <div class="settings-item" onclick="notify('Abriendo política de privacidad...')" style="cursor:pointer">
+          <div class="settings-label"><span class="settings-icon">🔒</span> Privacidad</div>
+          <span style="color:var(--green-pale)">›</span>
+        </div>
+        <div class="settings-item" onclick="notify('Abriendo términos y condiciones...')" style="cursor:pointer">
+          <div class="settings-label"><span class="settings-icon">📄</span> Términos</div>
+          <span style="color:var(--green-pale)">›</span>
+        </div>
+        <div class="settings-item" onclick="notify('¡Gracias por contactarnos! 🌿')" style="cursor:pointer">
+          <div class="settings-label"><span class="settings-icon">💬</span> Soporte</div>
+          <span style="color:var(--green-pale)">›</span>
+        </div>
+      </div>
+      <div class="version-text">TREPET v1.0.0 🌱</div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="showScreen('profile')"><div class="nav-icon">🏠</div>Inicio</button>
+      <button class="nav-btn" onclick="showScreen('streak')"><div class="nav-icon">🔥</div>Racha</button>
+      <button class="nav-btn" onclick="showScreen('shop')"><div class="nav-icon">🛒</div>Tienda</button>
+      <button class="nav-btn active" onclick="showScreen('settings')"><div class="nav-icon">⚙️</div>Ajustes</button>
+    </div>
+  </div>
+
+  <!-- CARE MODAL -->
+  <div class="modal-overlay" id="care-modal" style="display:none">
+    <div class="modal">
+      <h3 id="modal-title">Cuidado</h3>
+      <div id="modal-content"></div>
+      <button class="modal-close" onclick="closeCareModal()">✓ ¡Entendido!</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let coins = 250;
+let currentTree = 'jacaranda';
+let owned = [];
+
+const treeData = {
+  jacaranda:{name:'Jacaranda',emoji:'🌸',water:75,light:90,soil:60,temp:'Óptima (18–25°C)'},
+  encino:{name:'Encino',emoji:'🌳',water:50,light:85,soil:80,temp:'Fresca (10–20°C)'},
+  cedro:{name:'Cedro',emoji:'🌲',water:65,light:70,soil:70,temp:'Templada (15–22°C)'}
+};
+
+const careData = {
+  jacaranda:[
+    {icon:'💧',title:'Riego',desc:'2–3 veces por semana',status:75,color:'#52b788',tips:['Riega profundamente pero deja secar el suelo entre riegos.','Evita el encharcamiento, causa pudrición de raíces.','En épocas de lluvia reduce el riego.','Agua a temperatura ambiente, nunca fría.']},
+    {icon:'☀️',title:'Luz solar',desc:'Pleno sol, 6+ horas',status:90,color:'#f4d03f',tips:['Necesita exposición directa al sol mínimo 6 horas diarias.','En climas muy calurosos, tolera sombra parcial al mediodía.','Sin luz suficiente no florecerá.','Orienta la copa hacia el sur para maximizar luz.']},
+    {icon:'🌱',title:'Tierra y abono',desc:'Tierra bien drenada',status:60,color:'#a07850',tips:['Usa tierra arenosa o con buen drenaje.','Abona con fertilizante NPK (10-10-10) en primavera.','Añade compost cada 6 meses.','pH ideal entre 6.0 y 7.0.']},
+    {icon:'✂️',title:'Poda',desc:'Después de floración',status:80,color:'#52b788',tips:['Poda ramas muertas o cruzadas en otoño.','No podar durante la floración.','Usa tijeras desinfectadas.','Elimina los chupones que crecen desde la base.']},
+    {icon:'🐛',title:'Plagas',desc:'Revisión semanal',status:85,color:'#e74c3c',tips:['Revisa hojas buscando pulgones o cochinillas.','Aplica jabón potásico diluido si hay infestación.','El neem es un insecticida natural efectivo.','Evita plaguicidas que dañen abejas polinizadoras.']},
+    {icon:'🌡️',title:'Temperatura',desc:'18–25°C ideal',status:70,color:'#3498db',tips:['Sensible a heladas, protégela si baja de 5°C.','En zonas frías planta cerca de muros que conserven calor.','No aguanta temperaturas sobre 38°C por tiempo prolongado.','La humedad ambiental moderada (40–60%) es ideal.']}
+  ],
+  encino:[
+    {icon:'💧',title:'Riego',desc:'1 vez por semana',status:50,color:'#52b788',tips:['Riego escaso, es un árbol muy resistente a la sequía.','Una vez establecido, lluvia natural suele ser suficiente.','Riega profundo y espaciado.','Evita riego superficial frecuente.']},
+    {icon:'☀️',title:'Luz solar',desc:'Pleno sol o semisombra',status:85,color:'#f4d03f',tips:['Tolera sombra parcial pero prefiere pleno sol.','Crece más lento con poca luz.','Ideal en espacios abiertos y amplios.','Buen árbol para reforestación.']},
+    {icon:'🌱',title:'Tierra y abono',desc:'Tolera suelos pobres',status:80,color:'#a07850',tips:['Se adapta a suelos arcillosos, arenosos o rocosos.','No requiere mucho fertilizante.','Suelo bien drenado es clave.','El pH puede variar de 5.5 a 7.5.']},
+    {icon:'✂️',title:'Poda',desc:'Mínima, invierno',status:90,color:'#52b788',tips:['Podar solo ramas dañadas o enfermas.','Ideal en invierno cuando está sin hojas.','Forma natural majestuosa, no podar en exceso.','Desinfecta herramientas siempre.']},
+    {icon:'🐛',title:'Plagas',desc:'Roble muy resistente',status:90,color:'#e74c3c',tips:['Muy resistente a plagas en general.','Ocasionalmente puede sufrir de agallas de avispa.','Las agallas no dañan al árbol en la mayoría de casos.','Vigilar en años de sequía prolongada.']},
+    {icon:'🌡️',title:'Temperatura',desc:'Amplio rango',status:95,color:'#3498db',tips:['Tolera desde heladas hasta calor intenso.','Especie adaptada a climas variados de México.','Resistente al viento.','Ideal para zonas semiáridas.']}
+  ],
+  cedro:[
+    {icon:'💧',title:'Riego',desc:'2 veces por semana',status:65,color:'#52b788',tips:['Riego moderado, evitar exceso.','Más agua en verano, menos en invierno.','Riego al amanecer es lo ideal.','Mulch en la base ayuda a retener humedad.']},
+    {icon:'☀️',title:'Luz solar',desc:'Sol a semisombra',status:70,color:'#f4d03f',tips:['Prefiere pleno sol, tolera algo de sombra.','6 horas de luz mínimo.','Evitar sombra total.','Rota el árbol en maceta cada mes.']},
+    {icon:'🌱',title:'Tierra y abono',desc:'Rica y bien drenada',status:70,color:'#a07850',tips:['Tierra fértil y bien aireada.','Abona en primavera con fertilizante de liberación lenta.','Añade perlita para mejorar drenaje.','Cambia sustrato cada 2 años en maceta.']},
+    {icon:'✂️',title:'Poda',desc:'Anual en invierno',status:85,color:'#52b788',tips:['Poda de formación en los primeros años.','Elimina ramas bajas para elevar la copa.','No retirar más del 25% del follaje en una poda.','Excelente para dar forma ornamental.']},
+    {icon:'🐛',title:'Plagas',desc:'Vigilar barrenadores',status:75,color:'#e74c3c',tips:['Puede ser afectado por barrenadores de tronco.','Revisa la corteza buscando orificios o aserrín.','Usa imidacloprid como tratamiento preventivo.','Mantén árbol saludable para resistir plagas.']},
+    {icon:'🌡️',title:'Temperatura',desc:'15–22°C ideal',status:80,color:'#3498db',tips:['Sensible a heladas severas.','Protege con manta en frío extremo.','Tolera calor moderado con riego adecuado.','Buena ventilación evita hongos.']}
+  ]
+};
+
+const rewardPath = [
+  {days:7,title:'Primera semana',reward:'+30 moneditas',icon:'🌱',status:'done'},
+  {days:14,title:'Dos semanas',reward:'+50 moneditas',icon:'🌿',status:'done'},
+  {days:30,title:'Un mes completo',reward:'+100 moneditas + Gorra Pixel',icon:'🎩',status:'done'},
+  {days:47,title:'¡Tu racha actual!',reward:'¡Sigue así!',icon:'🔥',status:'active'},
+  {days:60,title:'Dos meses',reward:'+150 moneditas + Lentes Cool',icon:'😎',status:'locked'},
+  {days:90,title:'Tres meses',reward:'+250 moneditas + Árbol Dorado',icon:'✨',status:'locked'},
+  {days:180,title:'Seis meses',reward:'+500 moneditas + Marco Legendario',icon:'👑',status:'locked'},
+  {days:365,title:'¡Un año completo!',reward:'+1000 moneditas + Título Guardián',icon:'🏆',status:'locked'}
+];
+
+const shopItems = {
+  accesorios:[
+    {icon:'🎩',name:'Gorra Pixel',price:80,id:'gorra_pixel'},
+    {icon:'😎',name:'Lentes Cool',price:60,id:'lentes_cool'},
+    {icon:'🎀',name:'Moño Rosa',price:40,id:'mono_rosa'},
+    {icon:'⭐',name:'Corona Estrella',price:120,id:'corona_estrella'},
+    {icon:'🧣',name:'Bufanda',price:50,id:'bufanda'},
+    {icon:'🎪',name:'Sombrero Fiesta',price:70,id:'sombrero_fiesta'}
+  ],
+  macetas:[
+    {icon:'🏺',name:'Maceta Barro',price:30,id:'maceta_barro'},
+    {icon:'🪣',name:'Maceta Moderna',price:90,id:'maceta_moderna'},
+    {icon:'🌈',name:'Maceta Arcoíris',price:110,id:'maceta_arcoiris'},
+    {icon:'💎',name:'Maceta Cristal',price:200,id:'maceta_cristal'}
+  ],
+  fondos:[
+    {icon:'🌅',name:'Atardecer',price:100,id:'fondo_atardecer'},
+    {icon:'🌊',name:'Playa',price:100,id:'fondo_playa'},
+    {icon:'🏔️',name:'Montaña',price:120,id:'fondo_montana'},
+    {icon:'🌌',name:'Galaxia',price:180,id:'fondo_galaxia'}
+  ]
+};
+
+let currentTab = 'accesorios';
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop=0;
+  if(id==='streak') buildRewardPath();
+  if(id==='shop') buildShop(currentTab);
+  updateCoinsDisplay();
+}
+
+function showTreeDetail(treeId){
+  currentTree = treeId;
+  const t = treeData[treeId];
+  document.getElementById('tree-detail-name').textContent = t.name;
+  document.getElementById('tree-hero').textContent = t.emoji;
+  document.getElementById('water-val').textContent = t.water+'%';
+  document.getElementById('light-val').textContent = t.light+'%';
+  document.getElementById('soil-val').textContent = t.soil+'%';
+  document.getElementById('temp-val').textContent = 'Óptima';
+  buildCareGrid(treeId);
+  showScreen('tree-detail');
+}
+
+function buildCareGrid(treeId){
+  const grid = document.getElementById('care-grid');
+  grid.innerHTML='';
+  careData[treeId].forEach((c,i)=>{
+    grid.innerHTML+=`<div class="care-card" onclick="showCareModal(${i})">
+      <div class="care-icon">${c.icon}</div>
+      <div class="care-title">${c.title}</div>
+      <div class="care-desc">${c.desc}</div>
+      <div class="care-status">
+        <div class="status-bar"><div class="status-fill" style="width:${c.status}%;background:${c.color}"></div></div>
+        <span style="color:var(--green-pale);font-size:10px;font-weight:700">${c.status}%</span>
+      </div>
+    </div>`;
+  });
+}
+
+function showCareModal(idx){
+  const c = careData[currentTree][idx];
+  document.getElementById('modal-title').textContent = c.icon+' '+c.title;
+  let html = `<p style="color:var(--green-pale);margin-bottom:10px">Consejos para tu ${treeData[currentTree].name}:</p>`;
+  c.tips.forEach(tip=>{
+    html+=`<div class="modal-tip"><span class="tip-icon">🌿</span><p>${tip}</p></div>`;
+  });
+  document.getElementById('modal-content').innerHTML=html;
+  document.getElementById('care-modal').style.display='flex';
+}
+
+function closeCareModal(){
+  document.getElementById('care-modal').style.display='none';
+}
+
+function buildRewardPath(){
+  const path = document.getElementById('reward-path');
+  path.innerHTML='';
+  rewardPath.forEach(r=>{
+    const isActive = r.status==='active';
+    const isDone = r.status==='done';
+    const isLocked = r.status==='locked';
+    path.innerHTML+=`<div class="reward-node">
+      <div class="node-circle ${r.status}">${isDone?'✓':isLocked?'🔒':r.icon}</div>
+      <div class="node-info">
+        <div class="node-title">${r.title}</div>
+        <div class="node-days" style="color:var(--green-pale);font-size:11px">Día ${r.days}</div>
+        <div class="node-reward">🪙 ${r.reward}</div>
+      </div>
+      ${isDone?`<button class="claim-btn" onclick="claimReward(${r.days}, event)">Reclamar</button>`:''}
+      ${isActive?`<span style="color:var(--gold);font-size:11px;font-weight:800">HOY</span>`:''}
+    </div>`;
+  });
+}
+
+function claimReward(days, e){
+  const amounts={7:30,14:50,30:100};
+  const amount=amounts[days]||50;
+  coins+=amount;
+  updateCoinsDisplay();
+  e.target.textContent='✓';
+  e.target.disabled=true;
+  e.target.style.background='var(--green-light)';
+  notify(`+${amount} moneditas reclamadas! 🪙`);
+}
+
+function buildShop(tab){
+  const grid = document.getElementById('shop-grid');
+  grid.innerHTML='';
+  shopItems[tab].forEach(item=>{
+    const isOwned = owned.includes(item.id);
+    grid.innerHTML+=`<div class="shop-item ${isOwned?'owned':''}">
+      <div class="item-preview">${item.icon}</div>
+      <div class="item-name">${item.name}</div>
+      <div class="item-price">🪙 ${item.price}</div>
+      <button class="buy-btn" onclick="buyItem('${item.id}',${item.price},'${item.name}')" ${isOwned?'disabled':''}>
+        ${isOwned?'✓ Obtenido':'Comprar'}
+      </button>
+    </div>`;
+  });
+}
+
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  buildShop(tab);
+}
+
+function buyItem(id, price, name){
+  if(coins>=price){
+    coins-=price;
+    owned.push(id);
+    updateCoinsDisplay();
+    buildShop(currentTab);
+    notify(`¡${name} equipado a tu árbol! 🎉`);
+  } else {
+    notify(`Necesitas ${price-coins} moneditas más 🪙`);
+  }
+}
+
+function updateCoinsDisplay(){
+  document.getElementById('coins-display').textContent=coins;
+  document.getElementById('shop-coins').textContent=coins;
+}
+
+function toggleSwitch(id){
+  const el=document.getElementById('toggle-'+id);
+  el.classList.toggle('on');
+  if(id==='notif') notify(el.classList.contains('on')?'Notificaciones activadas 🔔':'Notificaciones desactivadas');
+  if(id==='dark') notify(el.classList.contains('on')?'Modo oscuro activado 🌙':'Modo claro activado ☀️');
+}
+
+function setBrightness(val){
+  document.querySelector('.phone').style.filter=`brightness(${val}%)`;
+}
+
+function notify(msg){
+  const existing=document.querySelector('.notif');
+  if(existing) existing.remove();
+  const n=document.createElement('div');
+  n.className='notif';n.textContent=msg;
+  document.getElementById('app').appendChild(n);
+  setTimeout(()=>n.remove(),2500);
+}
+
+// Stars
+const starsEl=document.getElementById('stars');
+for(let i=0;i<20;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.cssText=`width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;top:${Math.random()*100}%;left:${Math.random()*100}%;border-radius:50%;animation-delay:${Math.random()*2}s;animation-duration:${Math.random()*2+1}s`;
+  starsEl.appendChild(s);
+}
+
+buildRewardPath();
+buildShop('accesorios');
+</script>
